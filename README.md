@@ -4,6 +4,8 @@ CareHours is a web application for Adult Family Homes (AFHs), residential care, 
 
 > **Status:** version 2 is a full-stack application (Node.js + SQLite) that replaces the original browser-only timesheet (v1). v1 had no server, so its data was stored per browser with plain-text PINs. That cannot provide secure, shared, persistent records, so v2 adds a real backend. v1 remains available under [`legacy/`](legacy/) so existing data can be exported and imported.
 
+**Live demo:** https://tichaonadamis.github.io/home-care-agency/demo/ runs the full app in your browser with fictional sample data (sign in as `admin`, `sample.nurse` or `maria.sample`, password `Demo-Pass-2026`). It is built with `npm run build:demo`, which bundles the real server code with SQLite compiled to WebAssembly. Demo data stays in your browser; never enter real client information there.
+
 ---
 
 ## What's included

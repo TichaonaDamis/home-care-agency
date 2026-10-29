@@ -146,7 +146,7 @@ function navItems() {
 
 function renderShell() {
   const u = state.me.user;
-  const initials = u.display_name.split(/\s+/).map((s) => s[0]).join('').slice(0, 2).toUpperCase();
+  const initials = u.display_name.split(/\s+/).filter((s) => /^[A-Za-z]/.test(s)).map((s) => s[0]).join('').slice(0, 2).toUpperCase();
   $('#root').innerHTML = `<div class="shell">
     <aside class="sidebar" id="sidebar" aria-label="Main navigation">
       ${brand()}

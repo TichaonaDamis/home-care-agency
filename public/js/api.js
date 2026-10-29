@@ -10,7 +10,9 @@ async function request(method, path, body, { raw = false } = {}) {
   const opts = { method, headers: { 'X-CareHours': '1' }, credentials: 'same-origin' };
   if (body !== undefined) { opts.headers['Content-Type'] = 'application/json'; opts.body = JSON.stringify(body); }
   let res;
-  try { res = await fetch(`/api${path}`, opts); } catch { throw new ApiError(0, 'Cannot reach the server. Check your connection.'); }
+  // The GitHub Pages demo supplies an in-browser API; the real app uses the network.
+  const doFetch = globalThis.__carehoursFetch || fetch;
+  try { res = await doFetch(`/api${path}`, opts); } catch { throw new ApiError(0, 'Cannot reach the server. Check your connection.'); }
   if (raw && res.ok) return res;
   let data = null;
   const text = await res.text();

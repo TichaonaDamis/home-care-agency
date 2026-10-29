@@ -2,7 +2,7 @@
   "name": "carehours",
   "version": "2.0.0",
   "private": true,
-  "description": "CareHours — Adult Family Home & Home Care management system",
+  "description": "CareHours \u2014 Adult Family Home & Home Care management system",
   "type": "commonjs",
   "main": "server/index.js",
   "engines": {
@@ -16,10 +16,17 @@
     "create-admin": "node --disable-warning=ExperimentalWarning server/cli.js create-admin",
     "backup": "node --disable-warning=ExperimentalWarning server/cli.js backup",
     "purge-sample": "node --disable-warning=ExperimentalWarning server/cli.js purge-sample",
-    "test": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/*.test.js"
+    "test": "node --disable-warning=ExperimentalWarning --test --test-concurrency=1 test/*.test.js",
+    "build:demo": "node scripts/build-demo.mjs"
   },
   "license": "UNLICENSED",
   "dependencies": {
     "express": "^5.3.0"
+  },
+  "devDependencies": {
+    "@noble/hashes": "^1.6.1",
+    "buffer": "^6.0.3",
+    "esbuild": "^0.24.2",
+    "sql.js": "^1.11.0"
   }
 }
