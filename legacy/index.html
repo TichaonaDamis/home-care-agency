@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CareHours – Home Care Agency Timesheets</title>
+  <meta name="description" content="Caregiver hour logging and visit reports for a home care agency.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">♥</span>
+      <span id="agencyName">CareHours</span>
+    </div>
+    <nav id="nav" class="nav hidden"></nav>
+    <div id="userBox" class="userbox hidden">
+      <span id="userLabel"></span>
+      <button id="logoutBtn" class="btn ghost small">Log out</button>
+    </div>
+  </header>
+
+  <main id="app">
+    <!-- LOGIN -->
+    <section id="view-login" class="view">
+      <div class="card narrow">
+        <h1>Sign in</h1>
+        <p class="muted">Caregivers: choose your name and enter your PIN.</p>
+        <form id="loginForm" class="form">
+          <label>Who are you?
+            <select id="loginUser" required></select>
+          </label>
+          <label>PIN
+            <input id="loginPin" type="password" inputmode="numeric" autocomplete="current-password" required>
+          </label>
+          <p id="loginError" class="error hidden"></p>
+          <button class="btn primary" type="submit">Sign in</button>
+        </form>
+        <p class="hint">First time? Sign in as <strong>Administrator</strong> with PIN <code>0000</code>, then change it under Settings.</p>
+      </div>
+    </section>
+
+    <!-- CAREGIVER: CLOCK / LOG -->
+    <section id="view-log" class="view hidden">
+      <div class="grid two">
+        <div class="card">
+          <h2>Clock in / out</h2>
+          <div id="clockIdle">
+            <label>Client
+              <select id="clockClient"></select>
+            </label>
+            <button id="clockInBtn" class="btn primary big">Clock in</button>
+          </div>
+          <div id="clockActive" class="hidden">
+            <p class="muted">On shift with <strong id="activeClient"></strong> since <span id="activeSince"></span></p>
+            <div id="timer" class="timer">00:00:00</div>
+            <button id="clockOutBtn" class="btn danger big">Clock out</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2 id="entryFormTitle">Log a visit</h2>
+          <form id="entryForm" class="form">
+            <input type="hidden" id="entryId">
+            <label>Client
+              <select id="entryClient" required></select>
+            </label>
+            <label>Date
+              <input id="entryDate" type="date" required>
+            </label>
+            <div class="row">
+              <label>Start
+                <input id="entryStart" type="time" required>
+              </label>
+              <label>End
+                <input id="entryEnd" type="time" required>
+              </label>
+              <label>Break (min)
+                <input id="entryBreak" type="number" min="0" step="5" value="0">
+              </label>
+            </div>
+            <div class="row">
+              <label>Mileage
+                <input id="entryMiles" type="number" min="0" step="0.1" value="0">
+              </label>
+              <label>Hours
+                <input id="entryHours" type="text" readonly tabindex="-1">
+              </label>
+            </div>
+            <fieldset>
+              <legend>Care provided</legend>
+              <div id="taskChecks" class="checks"></div>
+            </fieldset>
+            <label>Visit notes
+              <textarea id="entryNotes" rows="3" placeholder="Client condition, concerns, anything the office should know"></textarea>
+            </label>
+            <p id="entryError" class="error hidden"></p>
+            <div class="actions">
+              <button class="btn primary" type="submit">Save visit</button>
+              <button id="entryCancel" class="btn ghost hidden" type="button">Cancel edit</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head">
+          <h2>My timesheet</h2>
+          <div class="row tight">
+            <button class="btn ghost small" data-week="-1">◀ Prev</button>
+            <span id="weekLabel" class="muted"></span>
+            <button class="btn ghost small" data-week="1">Next ▶</button>
+          </div>
+        </div>
+        <div class="stats" id="myStats"></div>
+        <div class="table-wrap"><table id="myTable"></table></div>
+      </div>
+    </section>
+
+    <!-- ADMIN: REPORTS -->
+    <section id="view-reports" class="view hidden">
+      <div class="card">
+        <div class="card-head">
+          <h2>Reports</h2>
+          <div class="row tight noprint">
+            <button id="exportCsv" class="btn ghost small">Export CSV</button>
+            <button id="printReport" class="btn ghost small">Print</button>
+          </div>
+        </div>
+        <form id="reportFilters" class="row filters noprint">
+          <label>From <input id="rFrom" type="date"></label>
+          <label>To <input id="rTo" type="date"></label>
+          <label>Caregiver <select id="rCaregiver"></select></label>
+          <label>Client <select id="rClient"></select></label>
+          <label>Quick
+            <select id="rQuick">
+              <option value="">—</option>
+              <option value="thisWeek">This week</option>
+              <option value="lastWeek">Last week</option>
+              <option value="thisMonth">This month</option>
+              <option value="lastMonth">Last month</option>
+            </select>
+          </label>
+        </form>
+        <div class="stats" id="reportStats"></div>
+      </div>
+
+      <div class="grid two">
+        <div class="card">
+          <h3>Hours by caregiver</h3>
+          <div class="table-wrap"><table id="byCaregiver"></table></div>
+          <p class="hint">Overtime = hours over 40 in a Monday–Sunday week.</p>
+        </div>
+        <div class="card">
+          <h3>Hours by client</h3>
+          <div class="table-wrap"><table id="byClient"></table></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>All visits</h3>
+        <div class="table-wrap"><table id="allVisits"></table></div>
+      </div>
+    </section>
+
+    <!-- ADMIN: PEOPLE -->
+    <section id="view-people" class="view hidden">
+      <div class="grid two">
+        <div class="card">
+          <h2>Caregivers</h2>
+          <form id="cgForm" class="form">
+            <div class="row">
+              <label>Name <input id="cgName" required></label>
+              <label>PIN <input id="cgPin" inputmode="numeric" pattern="\d{4,8}" title="4–8 digits" required></label>
+            </div>
+            <label>Hourly rate ($) <input id="cgRate" type="number" min="0" step="0.01" value="18.00"></label>
+            <button class="btn primary" type="submit">Add caregiver</button>
+          </form>
+          <div class="table-wrap"><table id="cgTable"></table></div>
+        </div>
+        <div class="card">
+          <h2>Clients</h2>
+          <form id="clForm" class="form">
+            <label>Name <input id="clName" required></label>
+            <label>Address <input id="clAddr"></label>
+            <button class="btn primary" type="submit">Add client</button>
+          </form>
+          <div class="table-wrap"><table id="clTable"></table></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ADMIN: SETTINGS -->
+    <section id="view-settings" class="view hidden">
+      <div class="grid two">
+        <div class="card">
+          <h2>Agency</h2>
+          <form id="agencyForm" class="form">
+            <label>Agency name <input id="setAgency" required></label>
+            <label>Admin PIN <input id="setAdminPin" inputmode="numeric" pattern="\d{4,8}" title="4–8 digits" required></label>
+            <label>Care tasks (one per line)
+              <textarea id="setTasks" rows="8"></textarea>
+            </label>
+            <button class="btn primary" type="submit">Save settings</button>
+            <p id="settingsMsg" class="ok hidden">Saved.</p>
+          </form>
+        </div>
+        <div class="card">
+          <h2>Data</h2>
+          <p class="muted">All data is stored in this browser. Back it up regularly, and use import to move it to another computer.</p>
+          <div class="actions col">
+            <button id="backupBtn" class="btn ghost">Download backup (JSON)</button>
+            <label class="btn ghost filebtn">Restore from backup
+              <input id="restoreInput" type="file" accept="application/json" hidden>
+            </label>
+            <button id="demoBtn" class="btn ghost">Load demo data</button>
+            <button id="wipeBtn" class="btn danger">Erase all data</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="foot noprint">CareHours · timesheets for home care agencies</footer>
+  <script src="app.js"></script>
+</body>
+</html>
