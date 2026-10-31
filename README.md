@@ -73,6 +73,8 @@ No secrets are stored in the repository. Session tokens are random and only thei
 
 **GitHub Pages cannot run this application.** It only serves static files, and CareHours needs a server and a database. The repository's Pages site now shows an information page plus the legacy v1 app.
 
+**Step-by-step guide for DigitalOcean and Google Cloud:** [docs/DEPLOY.md](docs/DEPLOY.md). The one-command setup script `deploy/setup-ubuntu.sh` installs Node, HTTPS (Caddy), the service, a firewall and nightly backups.
+
 Host the server anywhere that runs Node 22 or Docker **with a persistent disk**:
 
 - **Render**: `render.yaml` is included (web service + persistent disk). Persistent disks require a paid instance; free instances lose data on restart.

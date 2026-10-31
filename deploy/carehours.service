@@ -1,0 +1,26 @@
+[Unit]
+Description=CareHours care management
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=carehours
+Group=carehours
+WorkingDirectory=/opt/carehours
+Environment=NODE_ENV=production
+Environment=PORT=3000
+Environment=DATABASE_FILE=/var/lib/carehours/carehours.sqlite
+Environment=TRUST_PROXY=1
+ExecStart=/usr/bin/node --disable-warning=ExperimentalWarning server/index.js
+Restart=on-failure
+RestartSec=5
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/carehours /var/backups/carehours
+UMask=0077
+
+[Install]
+WantedBy=multi-user.target

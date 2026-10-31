@@ -1,0 +1,7 @@
+[Unit]
+Description=CareHours database backup
+
+[Service]
+Type=oneshot
+User=carehours
+ExecStart=/usr/local/bin/carehours-backup
